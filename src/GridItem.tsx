@@ -76,7 +76,6 @@ export function GridItem({
 
   // handle move updates imperatively
   function handleMove(state: StateType, e: ResponderEvent) {
-    onDragStart();
     const x = startCoords.current[0] + state.delta[0];
     const y = startCoords.current[1] + state.delta[1];
     set({
@@ -105,7 +104,7 @@ export function GridItem({
         if (disableDrag) {
           return false;
         }
-
+        onDragStart();
         onStart();
 
         startCoords.current = [left, top];

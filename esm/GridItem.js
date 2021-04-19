@@ -37,7 +37,6 @@ export function GridItem(_a) {
     }), 2), styles = _b[0], set = _b[1];
     // handle move updates imperatively
     function handleMove(state, e) {
-        onDragStart();
         var x = startCoords.current[0] + state.delta[0];
         var y = startCoords.current[1] + state.delta[1];
         set({
@@ -62,6 +61,7 @@ export function GridItem(_a) {
             if (disableDrag) {
                 return false;
             }
+            onDragStart();
             onStart();
             startCoords.current = [left, top];
             dragging.current = true;
