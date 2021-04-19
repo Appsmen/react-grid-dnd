@@ -1,3 +1,5 @@
+// @ts-ignore-start
+// @ts-ignore-file
 import * as React from "react";
 import { Bounds } from "./use-measure";
 import { GridSettings, TraverseType } from "./grid-types";
@@ -312,3 +314,4 @@ export function GridContextProvider({
     </GridContext.Provider>
   );
 }
+// @ts-ignore-end
