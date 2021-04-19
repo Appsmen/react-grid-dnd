@@ -49,11 +49,13 @@ export const GridContext = React.createContext<GridContextType>({
   measureAll: noop,
   traverse: null,
   endTraverse: noop,
-  onChange: noop
+  onChange: noop,
 });
 
 interface GridContextProviderProps {
   children: React.ReactNode;
+  onStart: () => void;
+  onEnd: () => void;
   onChange: (
     sourceId: string,
     sourceIndex: number,
@@ -64,7 +66,9 @@ interface GridContextProviderProps {
 
 export function GridContextProvider({
   children,
-  onChange
+  onChange,
+  onStart,
+  onEnd,
 }: GridContextProviderProps) {
   const [traverse, setTraverse] = React.useState<TraverseType | null>(null);
   const dropRefs = React.useRef<Map<string, RegisterOptions>>(new Map());
@@ -102,7 +106,7 @@ export function GridContextProvider({
     if (!item) {
       return {
         x: rx,
-        y: ry
+        y: ry,
       };
     }
 
@@ -110,7 +114,7 @@ export function GridContextProvider({
 
     return {
       x: left + rx,
-      y: top + ry
+      y: top + ry,
     };
   }
 
@@ -126,7 +130,7 @@ export function GridContextProvider({
     const { left, top } = dropRefs.current.get(targetId)!;
     return {
       x: fx - left,
-      y: fy - top
+      y: fy - top,
     };
   }
 
@@ -143,7 +147,7 @@ export function GridContextProvider({
 
     return {
       x: tBounds.left - sBounds.left,
-      y: tBounds.top - sBounds.top
+      y: tBounds.top - sBounds.top,
     };
   }
 
@@ -190,6 +194,7 @@ export function GridContextProvider({
     y: number,
     sourceIndex: number
   ) {
+    onStart();
     const { x: fx, y: fy } = getFixedPosition(sourceId, x, y);
     const { x: rx, y: ry } = getRelativePosition(targetId, fx, fy);
     const { grid: targetGrid, count } = dropRefs.current.get(targetId)!;
@@ -202,7 +207,7 @@ export function GridContextProvider({
     );
 
     const {
-      xy: [px, py]
+      xy: [px, py],
     } = getPositionForIndex(targetIndex, targetGrid);
 
     const { x: dx, y: dy } = diffDropzones(sourceId, targetId);
@@ -224,7 +229,7 @@ export function GridContextProvider({
         sourceId,
         targetId,
         sourceIndex,
-        targetIndex
+        targetIndex,
       });
     }
   }
@@ -234,6 +239,7 @@ export function GridContextProvider({
    */
 
   function endTraverse() {
+    onEnd();
     setTraverse(null);
   }
 
@@ -277,14 +283,14 @@ export function GridContextProvider({
 
     setTraverse({
       ...traverse!,
-      execute: true
+      execute: true,
     });
 
     onChange(sourceId, sourceIndex, targetIndex, targetId);
   }
 
   function measureAll() {
-    dropRefs.current.forEach(ref => {
+    dropRefs.current.forEach((ref) => {
       ref.remeasure();
     });
   }
@@ -299,7 +305,7 @@ export function GridContextProvider({
         traverse,
         measureAll,
         endTraverse,
-        onChange: onSwitch
+        onChange: onSwitch,
       }}
     >
       {children}
