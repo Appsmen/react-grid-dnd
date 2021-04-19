@@ -82,7 +82,7 @@ var GridContext = React.createContext({
     onChange: noop,
 });
 function GridContextProvider(_a) {
-    var children = _a.children, onChange = _a.onChange, onStart = _a.onStart, onEnd = _a.onEnd;
+    var children = _a.children, onChange = _a.onChange;
     var _b = tslib_1.__read(React.useState(null), 2), traverse = _b[0], setTraverse = _b[1];
     var dropRefs = React.useRef(new Map());
     /**
@@ -190,7 +190,6 @@ function GridContextProvider(_a) {
      * @param sourceIndex
      */
     function startTraverse(sourceId, targetId, x, y, sourceIndex) {
-        onStart();
         var _a = getFixedPosition(sourceId, x, y), fx = _a.x, fy = _a.y;
         var _b = getRelativePosition(targetId, fx, fy), rx = _b.x, ry = _b.y;
         var _c = dropRefs.current.get(targetId), targetGrid = _c.grid, count = _c.count;
@@ -218,7 +217,6 @@ function GridContextProvider(_a) {
      * End any active traversals
      */
     function endTraverse() {
-        onEnd();
         setTraverse(null);
     }
     /**
@@ -459,7 +457,7 @@ function move(source, destination, droppableSource, droppableDestination) {
 }
 
 function GridItem(_a) {
-    var children = _a.children, style = _a.style, className = _a.className, other = tslib_1.__rest(_a, ["children", "style", "className"]);
+    var children = _a.children, onDragStart = _a.onDragStart, onDragEnd = _a.onDragEnd, style = _a.style, className = _a.className, other = tslib_1.__rest(_a, ["children", "onDragStart", "onDragEnd", "style", "className"]);
     var context = React.useContext(GridItemContext);
     if (!context) {
         throw Error("Unable to find GridItem context. Please ensure that GridItem is used as a child of GridDropZone");
@@ -479,7 +477,7 @@ function GridItem(_a) {
                 immediate: true,
                 zIndex: "1",
                 scale: 1.1,
-                opacity: 0.8
+                opacity: 0.8,
             };
         }
         return {
@@ -487,11 +485,12 @@ function GridItem(_a) {
             immediate: true,
             zIndex: "0",
             scale: 1,
-            opacity: 1
+            opacity: 1,
         };
     }), 2), styles = _b[0], set = _b[1];
     // handle move updates imperatively
     function handleMove(state, e) {
+        onDragStart();
         var x = startCoords.current[0] + state.delta[0];
         var y = startCoords.current[1] + state.delta[1];
         set({
@@ -499,12 +498,13 @@ function GridItem(_a) {
             zIndex: "1",
             immediate: true,
             opacity: 0.8,
-            scale: 1.1
+            scale: 1.1,
         });
         onMove(state, x, y);
     }
     // handle end of drag
     function handleEnd(state) {
+        onDragEnd();
         var x = startCoords.current[0] + state.delta[0];
         var y = startCoords.current[1] + state.delta[1];
         dragging.current = false;
@@ -528,9 +528,9 @@ function GridItem(_a) {
             return true;
         },
         onTerminate: handleEnd,
-        onRelease: handleEnd
+        onRelease: handleEnd,
     }, {
-        enableMouse: true
+        enableMouse: true,
     }).bind;
     /**
      * Update our position when left or top
@@ -543,7 +543,7 @@ function GridItem(_a) {
                 zIndex: "0",
                 opacity: 1,
                 scale: 1,
-                immediate: false
+                immediate: false,
             });
         }
     }, [dragging.current, left, top]);
@@ -559,7 +559,7 @@ function GridItem(_a) {
         dragging: isDragging,
         disabled: !!disableDrag,
         i: i,
-        grid: grid
+        grid: grid,
     })) : (React.createElement(reactSpring.animated.div, tslib_1.__assign({}, props), children));
 }
 

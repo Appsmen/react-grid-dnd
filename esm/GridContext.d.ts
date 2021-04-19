@@ -23,9 +23,7 @@ interface GridContextType {
 export declare const GridContext: React.Context<GridContextType>;
 interface GridContextProviderProps {
     children: React.ReactNode;
-    onStart: () => void;
-    onEnd: () => void;
     onChange: (sourceId: string, sourceIndex: number, targetIndex: number, targetId?: string) => void;
 }
-export declare function GridContextProvider({ children, onChange, onStart, onEnd, }: GridContextProviderProps): JSX.Element;
+export declare function GridContextProvider({ children, onChange, }: GridContextProviderProps): JSX.Element;
 export {};

@@ -15,7 +15,7 @@ export var GridContext = React.createContext({
     onChange: noop,
 });
 export function GridContextProvider(_a) {
-    var children = _a.children, onChange = _a.onChange, onStart = _a.onStart, onEnd = _a.onEnd;
+    var children = _a.children, onChange = _a.onChange;
     var _b = tslib_1.__read(React.useState(null), 2), traverse = _b[0], setTraverse = _b[1];
     var dropRefs = React.useRef(new Map());
     /**
@@ -123,7 +123,6 @@ export function GridContextProvider(_a) {
      * @param sourceIndex
      */
     function startTraverse(sourceId, targetId, x, y, sourceIndex) {
-        onStart();
         var _a = getFixedPosition(sourceId, x, y), fx = _a.x, fy = _a.y;
         var _b = getRelativePosition(targetId, fx, fy), rx = _b.x, ry = _b.y;
         var _c = dropRefs.current.get(targetId), targetGrid = _c.grid, count = _c.count;
@@ -151,7 +150,6 @@ export function GridContextProvider(_a) {
      * End any active traversals
      */
     function endTraverse() {
-        onEnd();
         setTraverse(null);
     }
     /**

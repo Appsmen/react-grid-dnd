@@ -1,5 +1,3 @@
-// @ts-ignore-start
-// @ts-ignore-file
 import * as React from "react";
 import { Bounds } from "./use-measure";
 import { GridSettings, TraverseType } from "./grid-types";
@@ -56,8 +54,6 @@ export const GridContext = React.createContext<GridContextType>({
 
 interface GridContextProviderProps {
   children: React.ReactNode;
-  onStart: () => void;
-  onEnd: () => void;
   onChange: (
     sourceId: string,
     sourceIndex: number,
@@ -69,8 +65,6 @@ interface GridContextProviderProps {
 export function GridContextProvider({
   children,
   onChange,
-  onStart,
-  onEnd,
 }: GridContextProviderProps) {
   const [traverse, setTraverse] = React.useState<TraverseType | null>(null);
   const dropRefs = React.useRef<Map<string, RegisterOptions>>(new Map());
@@ -196,7 +190,6 @@ export function GridContextProvider({
     y: number,
     sourceIndex: number
   ) {
-    onStart();
     const { x: fx, y: fy } = getFixedPosition(sourceId, x, y);
     const { x: rx, y: ry } = getRelativePosition(targetId, fx, fy);
     const { grid: targetGrid, count } = dropRefs.current.get(targetId)!;
@@ -241,7 +234,6 @@ export function GridContextProvider({
    */
 
   function endTraverse() {
-    onEnd();
     setTraverse(null);
   }
 
@@ -314,4 +306,3 @@ export function GridContextProvider({
     </GridContext.Provider>
   );
 }
-// @ts-ignore-end

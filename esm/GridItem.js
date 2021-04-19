@@ -1,10 +1,10 @@
 import * as tslib_1 from "tslib";
 import * as React from "react";
-import { useGestureResponder } from "react-gesture-responder";
+import { useGestureResponder, } from "react-gesture-responder";
 import { animated, interpolate, useSpring } from "react-spring";
 import { GridItemContext } from "./GridItemContext";
 export function GridItem(_a) {
-    var children = _a.children, style = _a.style, className = _a.className, other = tslib_1.__rest(_a, ["children", "style", "className"]);
+    var children = _a.children, onDragStart = _a.onDragStart, onDragEnd = _a.onDragEnd, style = _a.style, className = _a.className, other = tslib_1.__rest(_a, ["children", "onDragStart", "onDragEnd", "style", "className"]);
     var context = React.useContext(GridItemContext);
     if (!context) {
         throw Error("Unable to find GridItem context. Please ensure that GridItem is used as a child of GridDropZone");
@@ -24,7 +24,7 @@ export function GridItem(_a) {
                 immediate: true,
                 zIndex: "1",
                 scale: 1.1,
-                opacity: 0.8
+                opacity: 0.8,
             };
         }
         return {
@@ -32,11 +32,12 @@ export function GridItem(_a) {
             immediate: true,
             zIndex: "0",
             scale: 1,
-            opacity: 1
+            opacity: 1,
         };
     }), 2), styles = _b[0], set = _b[1];
     // handle move updates imperatively
     function handleMove(state, e) {
+        onDragStart();
         var x = startCoords.current[0] + state.delta[0];
         var y = startCoords.current[1] + state.delta[1];
         set({
@@ -44,12 +45,13 @@ export function GridItem(_a) {
             zIndex: "1",
             immediate: true,
             opacity: 0.8,
-            scale: 1.1
+            scale: 1.1,
         });
         onMove(state, x, y);
     }
     // handle end of drag
     function handleEnd(state) {
+        onDragEnd();
         var x = startCoords.current[0] + state.delta[0];
         var y = startCoords.current[1] + state.delta[1];
         dragging.current = false;
@@ -73,9 +75,9 @@ export function GridItem(_a) {
             return true;
         },
         onTerminate: handleEnd,
-        onRelease: handleEnd
+        onRelease: handleEnd,
     }, {
-        enableMouse: true
+        enableMouse: true,
     }).bind;
     /**
      * Update our position when left or top
@@ -88,7 +90,7 @@ export function GridItem(_a) {
                 zIndex: "0",
                 opacity: 1,
                 scale: 1,
-                immediate: false
+                immediate: false,
             });
         }
     }, [dragging.current, left, top]);
@@ -104,6 +106,6 @@ export function GridItem(_a) {
         dragging: isDragging,
         disabled: !!disableDrag,
         i: i,
-        grid: grid
+        grid: grid,
     })) : (React.createElement(animated.div, tslib_1.__assign({}, props), children));
 }
